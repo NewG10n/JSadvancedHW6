@@ -67,6 +67,6 @@ class FindApp {
 
 const httpClient = new HttpClient(
   "https://api.ipify.org/?format=json",
-  "https://ip-api.com/json/"
+  "http://ip-api.com/json/"
 );
 const findApp = new FindApp(httpClient);
