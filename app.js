@@ -36,20 +36,31 @@ class FindApp {
   }
 
   async handleFinder() {
-    const ipResponse = await this.httpClient.getIP();
-    const locationResponse = await this.httpClient.decodeIP(ipResponse);
-    if (locationResponse.status === "success") {
-      this.renderData(locationResponse);
-    } else {
-      console.log("Error!", locationResponse.status);
+    try {
+      const ipResponse = await this.httpClient.getIP();
+      const locationResponse = await this.httpClient.decodeIP(ipResponse);
+      if (locationResponse.status === "success") {
+        this.renderData(locationResponse);
+      } else {
+        throw new Error(locationResponse.status);
+      }
+    } catch (e) {
+      console.error(e.message);
     }
   }
 
   renderData(locationData) {
-    console.log(locationData);
-    const { country, city } = locationData;
+    const { country, city, zip, lat, lon } = locationData;
     const dataContainer = document.createElement("div");
-    dataContainer.innerText = `Your country: ${country}. Your city: ${city}`;
+    const message = document.createElement("h2");
+    const mapLink = document.createElement("a");
+
+    message.innerText = `Caught! You live in ${city}, ${country}, ${zip}. I will find your here: `;
+    mapLink.href = `https://www.google.com/maps/@${lat},${lon},16z`;
+    mapLink.innerText = "Your location";
+
+    dataContainer.append(message, mapLink);
+
     document.body.append(dataContainer);
   }
 }
